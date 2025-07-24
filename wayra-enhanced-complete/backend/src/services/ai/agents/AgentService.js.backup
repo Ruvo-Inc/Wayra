@@ -1,0 +1,383 @@
+/**
+ * Wayra AI Agent Service
+ * Manages the 4 specialized AI agents for travel planning
+ */
+
+const { OpenAIService } = require('../OpenAIService');
+const { AgentTools } = require('../tools/AgentTools');
+const { BudgetOptimizer } = require('../optimization/BudgetOptimizer');
+
+class AgentService {
+  constructor() {
+    this.openAI = new OpenAIService();
+    this.tools = new AgentTools();
+    this.optimizer = new BudgetOptimizer();
+  }
+
+  /**
+   * Budget Analyst Agent
+   * Specializes in budget optimization and cost analysis
+   */
+  getBudgetAnalystAgent() {
+    return {
+      name: "Budget Analyst",
+      role: "budget_analyst",
+      expertise: "Budget optimization, cost analysis, price comparison, financial planning",
+      systemPrompt: `You are a Budget Analyst Agent specializing in travel budget optimization.
+
+Your expertise includes:
+- Budget breakdown and allocation across travel components
+- Cost optimization strategies and money-saving recommendations
+- Price comparison and value analysis
+- Financial planning for different travel styles and preferences
+- Currency conversion and international travel budgeting
+
+Always provide:
+1. Detailed budget breakdowns with percentages
+2. Specific cost-saving recommendations
+3. Alternative options at different price points
+4. Clear explanations of budget allocation reasoning
+5. Practical tips for staying within budget
+
+Focus on maximizing value while maintaining quality experiences.`,
+      tools: [
+        this.tools.budgetCalculator,
+        this.tools.priceComparison,
+        this.tools.currencyConverter,
+        this.tools.costOptimizer
+      ]
+    };
+  }
+
+  /**
+   * Destination Research Specialist Agent
+   * Specializes in destination analysis and cultural insights
+   */
+  getDestinationResearchAgent() {
+    return {
+      name: "Destination Research Specialist",
+      role: "destination_research",
+      expertise: "Destination analysis, cultural insights, seasonal recommendations, local experiences",
+      systemPrompt: `You are a Destination Research Specialist Agent with deep knowledge of global destinations.
+
+Your expertise includes:
+- Comprehensive destination analysis and recommendations
+- Cultural insights and local customs
+- Seasonal travel optimization and weather considerations
+- Hidden gems and off-the-beaten-path experiences
+- Safety considerations and travel advisories
+- Local transportation and logistics
+
+Always provide:
+1. Detailed destination overview with key highlights
+2. Best times to visit with weather and crowd considerations
+3. Cultural insights and local customs to be aware of
+4. Must-see attractions and hidden gems
+5. Local food specialties and dining recommendations
+6. Transportation options and logistics tips
+7. Safety considerations and travel tips
+
+Focus on authentic, budget-friendly experiences that provide genuine cultural immersion.`,
+      tools: [
+        this.tools.destinationSearch,
+        this.tools.weatherAnalysis,
+        this.tools.safetyChecker,
+        this.tools.culturalGuide
+      ]
+    };
+  }
+
+  /**
+   * Itinerary Planning Specialist Agent
+   * Specializes in detailed itinerary creation and optimization
+   */
+  getItineraryPlanningAgent() {
+    return {
+      name: "Itinerary Planning Specialist",
+      role: "itinerary_planning",
+      expertise: "Route optimization, time management, activity scheduling, logistics coordination",
+      systemPrompt: `You are an Itinerary Planning Specialist Agent focused on creating detailed, optimized travel itineraries.
+
+Your expertise includes:
+- Day-by-day itinerary planning with optimal routing
+- Time management and realistic scheduling
+- Activity coordination and booking timing
+- Transportation logistics between locations
+- Contingency planning and flexibility considerations
+- Group travel coordination and preferences
+
+Always provide:
+1. Detailed daily schedules with specific times and locations
+2. Realistic travel times between activities
+3. Meal recommendations integrated into the schedule
+4. Transportation options and booking information
+5. Backup plans for weather or other disruptions
+6. Cost estimates for each activity and day
+7. Tips for efficient time management
+
+Focus on creating realistic, enjoyable itineraries that maximize experiences while staying within budget and time constraints.
+
+IMPORTANT: Always return your response as valid JSON with this exact structure:
+{
+  "day1": {
+    "date": "YYYY-MM-DD",
+    "activities": [
+      {
+        "time": "HH:MM",
+        "activity": "Activity name",
+        "location": "Specific location",
+        "duration": "X hours",
+        "cost": "Estimated cost",
+        "description": "Detailed description",
+        "tips": "Practical tips"
+      }
+    ],
+    "meals": {
+      "breakfast": "Recommendation with location and cost",
+      "lunch": "Recommendation with location and cost", 
+      "dinner": "Recommendation with location and cost"
+    },
+    "transportation": "Daily transportation summary",
+    "totalCost": "Daily total estimated cost"
+  }
+}
+
+Generate this structure for ALL days of the trip duration specified.`,
+      tools: [
+        this.tools.routeOptimizer,
+        this.tools.schedulePlanner,
+        this.tools.activityFinder,
+        this.tools.transportCalculator
+      ]
+    };
+  }
+
+  /**
+   * Travel Coordinator Agent
+   * Specializes in logistics coordination and booking management
+   */
+  getTravelCoordinatorAgent() {
+    return {
+      name: "Travel Coordinator",
+      role: "travel_coordinator",
+      expertise: "Logistics coordination, booking management, documentation, crisis resolution",
+      systemPrompt: `You are a Travel Coordinator Agent specializing in travel logistics and coordination.
+
+Your expertise includes:
+- Booking coordination and timing strategies
+- Travel documentation and requirements
+- Group travel management and coordination
+- Crisis management and problem resolution
+- Travel insurance and protection recommendations
+- Communication and coordination tools
+
+Always provide:
+1. Booking timeline and strategy recommendations
+2. Required documentation checklist
+3. Group coordination suggestions and tools
+4. Emergency contact information and procedures
+5. Travel insurance recommendations
+6. Communication plan for group travel
+7. Contingency plans for common issues
+
+Focus on ensuring smooth, well-coordinated travel experiences with proper preparation and risk management.`,
+      tools: [
+        this.tools.bookingOptimizer,
+        this.tools.documentChecker,
+        this.tools.crisisManager,
+        this.tools.groupCoordinator
+      ]
+    };
+  }
+
+  /**
+   * Execute a task with a specific agent
+   */
+  async executeAgentTask(agentRole, task, context = {}) {
+    try {
+      const agent = this.getAgentByRole(agentRole);
+      if (!agent) {
+        throw new Error(`Unknown agent role: ${agentRole}`);
+      }
+
+      // Build the prompt with context
+      const prompt = this.buildAgentPrompt(agent, task, context);
+      
+      // Execute with OpenAI
+      const response = await this.openAI.generateResponse(prompt, {
+        maxTokens: agentRole === 'itinerary_planning' ? 3000 : 2000,
+        temperature: 0.7
+      });
+
+      // Parse response based on agent type
+      return this.parseAgentResponse(agentRole, response);
+
+    } catch (error) {
+      console.error(`Error executing ${agentRole} agent task:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get agent by role
+   */
+  getAgentByRole(role) {
+    switch (role) {
+      case 'budget_analyst':
+        return this.getBudgetAnalystAgent();
+      case 'destination_research':
+        return this.getDestinationResearchAgent();
+      case 'itinerary_planning':
+        return this.getItineraryPlanningAgent();
+      case 'travel_coordinator':
+        return this.getTravelCoordinatorAgent();
+      default:
+        return null;
+    }
+  }
+
+  /**
+   * Build agent prompt with context
+   */
+  buildAgentPrompt(agent, task, context) {
+    const { destination, budget, duration, travelers, interests, dates } = context;
+    
+    let contextInfo = '';
+    if (destination) contextInfo += `Destination: ${destination}\n`;
+    if (budget) contextInfo += `Budget: $${budget}\n`;
+    if (duration) contextInfo += `Duration: ${duration} days\n`;
+    if (travelers) contextInfo += `Travelers: ${travelers}\n`;
+    if (interests) contextInfo += `Interests: ${interests.join(', ')}\n`;
+    if (dates) contextInfo += `Travel Dates: ${dates.start} to ${dates.end}\n`;
+
+    return `${agent.systemPrompt}
+
+CONTEXT:
+${contextInfo}
+
+TASK: ${task}
+
+Please provide a comprehensive response based on your expertise and the given context.`;
+  }
+
+  /**
+   * Parse agent response based on type
+   */
+  parseAgentResponse(agentRole, response) {
+    try {
+      // For itinerary planning, try to parse as JSON
+      if (agentRole === 'itinerary_planning') {
+        // Try to extract JSON from the response
+        const jsonMatch = response.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[0]);
+        } else {
+          // Fallback: return structured text response
+          return {
+            error: "JSON parsing failed",
+            rawResponse: response,
+            fallbackItinerary: this.createFallbackItinerary(response)
+          };
+        }
+      }
+      
+      // For other agents, return the text response
+      return response;
+      
+    } catch (error) {
+      console.error(`Error parsing ${agentRole} response:`, error);
+      return {
+        error: "Response parsing failed",
+        rawResponse: response
+      };
+    }
+  }
+
+  /**
+   * Create fallback itinerary when JSON parsing fails
+   */
+  createFallbackItinerary(response) {
+    return {
+      day1: {
+        date: new Date().toISOString().split('T')[0],
+        activities: [
+          {
+            time: "09:00",
+            activity: "Arrival and Check-in",
+            location: "Hotel",
+            duration: "2 hours",
+            cost: "Included",
+            description: "Arrive at destination and check into accommodation",
+            tips: "Keep important documents handy"
+          }
+        ],
+        meals: {
+          breakfast: "Hotel breakfast or local cafe - $15-25",
+          lunch: "Local restaurant - $20-30",
+          dinner: "Traditional cuisine - $25-40"
+        },
+        transportation: "Airport transfer and local transport",
+        totalCost: "$100-150"
+      },
+      note: "This is a fallback itinerary. The AI response could not be parsed as JSON.",
+      originalResponse: response.substring(0, 500) + "..."
+    };
+  }
+
+  /**
+   * Execute comprehensive multi-agent planning
+   */
+  async executeComprehensivePlanning(planningRequest) {
+    try {
+      const { destination, budget, duration, travelers, interests, dates } = planningRequest;
+      
+      const context = {
+        destination,
+        budget,
+        duration,
+        travelers,
+        interests,
+        dates
+      };
+
+      // Execute all agents in parallel for efficiency
+      const [budgetAnalysis, destinationInsights, itineraryPlan, travelCoordination] = await Promise.allSettled([
+        this.executeAgentTask('budget_analyst', 
+          `Analyze and optimize the budget for a ${duration}-day trip to ${destination} for ${travelers} travelers with a total budget of $${budget}. Provide detailed breakdown and cost-saving recommendations.`, 
+          context
+        ),
+        this.executeAgentTask('destination_research', 
+          `Provide comprehensive research and insights for ${destination}, including best times to visit, cultural insights, must-see attractions, and local experiences suitable for travelers interested in ${interests?.join(', ')}.`, 
+          context
+        ),
+        this.executeAgentTask('itinerary_planning', 
+          `Create a detailed ${duration}-day itinerary for ${destination} for ${travelers} travelers with interests in ${interests?.join(', ')}. Include specific activities, times, locations, and costs for each day.`, 
+          context
+        ),
+        this.executeAgentTask('travel_coordinator', 
+          `Provide travel coordination recommendations for a ${duration}-day trip to ${destination} for ${travelers} travelers, including booking strategies, documentation requirements, and logistics coordination.`, 
+          context
+        )
+      ]);
+
+      return {
+        budgetAnalysis: budgetAnalysis.status === 'fulfilled' ? budgetAnalysis.value : null,
+        destinationInsights: destinationInsights.status === 'fulfilled' ? destinationInsights.value : null,
+        itineraryPlan: itineraryPlan.status === 'fulfilled' ? itineraryPlan.value : null,
+        travelCoordination: travelCoordination.status === 'fulfilled' ? travelCoordination.value : null,
+        errors: {
+          budgetAnalysis: budgetAnalysis.status === 'rejected' ? budgetAnalysis.reason : null,
+          destinationInsights: destinationInsights.status === 'rejected' ? destinationInsights.reason : null,
+          itineraryPlan: itineraryPlan.status === 'rejected' ? itineraryPlan.reason : null,
+          travelCoordination: travelCoordination.status === 'rejected' ? travelCoordination.reason : null
+        }
+      };
+
+    } catch (error) {
+      console.error('Error in comprehensive planning:', error);
+      throw error;
+    }
+  }
+}
+
+module.exports = { AgentService };

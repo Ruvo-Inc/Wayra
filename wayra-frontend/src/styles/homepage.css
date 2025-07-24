@@ -1,0 +1,645 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap');
+
+/* Wayra Travel Colors - Wanderlust Inspired */
+:root {
+  --wayra-primary: #FF6B6B;
+  --wayra-secondary: #4ECDC4;
+  --wayra-accent: #45B7D1;
+  --wayra-gradient-start: #FF6B6B;
+  --wayra-gradient-end: #4ECDC4;
+  --sunset-orange: #FF8A65;
+  --ocean-blue: #26C6DA;
+  --tropical-green: #66BB6A;
+  --golden-sand: #FFD54F;
+  --cloud-white: #FFFFFF;
+  --deep-ocean: #0D47A1;
+  --midnight-sky: #1A237E;
+  --text-primary: #FFFFFF;
+  --text-secondary: #E8F4FD;
+  --text-muted: #B3E5FC;
+  --border-subtle: rgba(255, 255, 255, 0.15);
+  --surface-elevated: rgba(255, 255, 255, 0.1);
+}
+
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  line-height: 1.6;
+  color: var(--midnight-navy);
+  background-color: var(--cloud-white);
+}
+
+/* Wayra Homepage Styles - Vantara Inspired */
+.wayra-homepage {
+  font-family: 'Inter', sans-serif;
+  color: #1a1a1a;
+}
+
+/* Navigation */
+.wayra-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(13, 71, 161, 0.9);
+  backdrop-filter: blur(20px);
+  z-index: 100;
+  border-bottom: 1px solid rgba(255, 215, 79, 0.2);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.wayra-feature-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  padding: 40px;
+  text-align: center;
+  transition: all 0.4s ease;
+  backdrop-filter: blur(25px);
+  position: relative;
+  overflow: hidden;
+}
+
+.wayra-feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, var(--wayra-primary) 0%, var(--wayra-secondary) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: -1;
+}
+
+.wayra-feature-card:hover::before {
+  opacity: 0.05;
+}
+
+.wayra-logo {
+  font-family: 'Poppins', sans-serif;
+}
+
+.wayra-cta-button-small {
+  background: linear-gradient(135deg, var(--wayra-primary) 0%, var(--wayra-secondary) 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.wayra-cta-button-small:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+}
+
+/* Hero Section */
+.wayra-hero {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--deep-ocean) 0%, var(--midnight-sky) 50%, #1A237E 100%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-top: 80px;
+  overflow: hidden;
+}
+
+/* Add travel-inspired background elements */
+.wayra-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(255, 107, 107, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(78, 205, 196, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(69, 183, 209, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.wayra-hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    url('data:image/svg+xml,<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><text x="40" y="45" font-size="20" text-anchor="middle" fill="%23FFD74F" opacity="0.1">✈</text></svg>') 10% 20%,
+    url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><text x="30" y="35" font-size="16" text-anchor="middle" fill="%234ECDC4" opacity="0.08">🗺</text></svg>') 85% 30%,
+    url('data:image/svg+xml,<svg width="70" height="70" viewBox="0 0 70 70" xmlns="http://www.w3.org/2000/svg"><text x="35" y="40" font-size="18" text-anchor="middle" fill="%23FF6B6B" opacity="0.06">🏝</text></svg>') 60% 75%,
+    url('data:image/svg+xml,<svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg"><text x="25" y="30" font-size="14" text-anchor="middle" fill="%2345B7D1" opacity="0.07">🧳</text></svg>') 20% 80%;
+  background-repeat: no-repeat;
+  animation: floatTravelIcons 25s ease-in-out infinite;
+}
+
+@keyframes floatTravelIcons {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg); 
+    opacity: 1;
+  }
+  25% { 
+    transform: translateY(-15px) rotate(2deg); 
+    opacity: 0.8;
+  }
+  50% { 
+    transform: translateY(-25px) rotate(-1deg); 
+    opacity: 0.6;
+  }
+  75% { 
+    transform: translateY(-10px) rotate(1deg); 
+    opacity: 0.9;
+  }
+}
+
+.wayra-hero-content {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  animation: heroFadeIn 1.2s ease-out;
+}
+
+@keyframes heroFadeIn {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.wayra-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface-elevated);
+  backdrop-filter: blur(20px);
+  padding: 14px 28px;
+  border-radius: 50px;
+  margin-bottom: 40px;
+  border: 1px solid var(--border-subtle);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.wayra-hero-badge svg {
+  color: #fbbf24;
+}
+
+.wayra-hero-title {
+  font-size: 4.5rem;
+  font-weight: 800;
+  margin-bottom: 32px;
+  background: linear-gradient(135deg, var(--wayra-primary) 0%, var(--wayra-secondary) 50%, var(--wayra-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
+  font-family: 'Poppins', sans-serif;
+  text-shadow: 0 4px 20px rgba(255, 215, 79, 0.3);
+  animation: titleGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+  0% { filter: drop-shadow(0 0 10px rgba(255, 215, 79, 0.3)); }
+  100% { filter: drop-shadow(0 0 20px rgba(78, 205, 196, 0.4)); }
+}
+
+.wayra-hero-subtitle {
+  font-size: 1.5rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 48px;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.wayra-hero-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 60px;
+  flex-wrap: wrap;
+}
+
+.wayra-cta-button-primary {
+  background: linear-gradient(135deg, var(--wayra-primary) 0%, var(--sunset-orange) 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 20px 40px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 30px rgba(255, 107, 107, 0.4);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+}
+
+.wayra-cta-button-primary:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 15px 40px rgba(255, 107, 107, 0.6);
+  background: linear-gradient(135deg, #FF5252 0%, #FF7043 100%);
+}
+
+.wayra-cta-button-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.wayra-cta-button-primary:hover::before {
+  left: 100%;
+}
+
+.wayra-cta-button-secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border: 2px solid var(--wayra-secondary);
+  border-radius: 50px;
+  padding: 18px 36px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  letter-spacing: 0.01em;
+  position: relative;
+  overflow: hidden;
+}
+
+.wayra-cta-button-secondary:hover {
+  background: var(--wayra-secondary);
+  border-color: var(--wayra-secondary);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
+  color: white;
+}
+
+.wayra-hero-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 48px;
+  margin-top: 80px;
+  padding-top: 80px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.wayra-stat {
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.wayra-counter {
+  font-size: 2.75rem;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+}
+
+.wayra-counter-label {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Section Styles */
+.wayra-section {
+  padding: 120px 0;
+  position: relative;
+}
+
+.wayra-section-light {
+  background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+  color: #0C4A6E;
+  position: relative;
+}
+
+.wayra-section-light::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(255, 215, 79, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(78, 205, 196, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.wayra-section-dark {
+  background: linear-gradient(135deg, var(--deep-ocean) 0%, var(--midnight-sky) 100%);
+  color: var(--text-primary);
+  position: relative;
+}
+
+.wayra-section-dark::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 30% 40%, rgba(255, 107, 107, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(69, 183, 209, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.wayra-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.wayra-headline {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 32px;
+  letter-spacing: -0.01em;
+}
+
+.wayra-body {
+  font-family: 'Inter', sans-serif;
+  line-height: 1.7;
+}
+
+.wayra-card {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.wayra-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(135deg, var(--wayra-primary) 0%, var(--wayra-secondary) 100%);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.wayra-card:hover::before {
+  transform: scaleX(1);
+}
+
+.wayra-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+}
+
+.wayra-feature-icon {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, var(--wayra-primary) 0%, var(--wayra-secondary) 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 22px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 102, 204, 0.2);
+}
+
+.wayra-testimonial {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+  border-left: 6px solid var(--wayra-primary);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.wayra-testimonial:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 60px rgba(0, 0, 0, 0.15);
+}
+
+.wayra-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 4px;
+}
+
+.wayra-badge-success {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--success-green);
+}
+
+.wayra-badge-primary {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--wayra-primary);
+}
+
+.wayra-mobile-cta {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  z-index: 50;
+  display: none;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .wayra-section {
+    padding: 60px 0;
+  }
+  
+  .wayra-container {
+    padding: 0 16px;
+  }
+  
+  .wayra-card {
+    padding: 24px;
+  }
+  
+  .wayra-feature-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 20px;
+  }
+  
+  .wayra-counter {
+    font-size: 2rem;
+  }
+  
+  .wayra-mobile-cta {
+    display: block;
+  }
+  
+  .wayra-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .wayra-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .wayra-counter {
+    font-size: 1.8rem;
+  }
+}
+
+/* Animation Classes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.wayra-pulse {
+  animation: pulse 2s infinite;
+}
+
+/* Utility Classes */
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
+.mb-8 {
+  margin-bottom: 2rem;
+}
+
+.mt-8 {
+  margin-top: 2rem;
+}
+
+.grid {
+  display: grid;
+}
+
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.gap-6 {
+  gap: 1.5rem;
+}
+
+.gap-8 {
+  gap: 2rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.space-x-4 > * + * {
+  margin-left: 1rem;
+}
+
+@media (max-width: 768px) {
+  .grid-cols-2 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  
+  .grid-cols-3 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+

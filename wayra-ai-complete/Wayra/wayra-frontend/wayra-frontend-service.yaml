@@ -1,0 +1,47 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  annotations:
+    run.googleapis.com/ingress: all
+    run.googleapis.com/ingress-status: all
+    run.googleapis.com/urls: '["https://wayra-frontend-424430120938.us-central1.run.app","https://wayra-frontend-znpttr73jq-uc.a.run.app"]'
+  labels:
+    cloud.googleapis.com/location: us-central1
+  name: wayra-frontend
+  namespace: '424430120938'
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: '10'
+        run.googleapis.com/client-name: gcloud
+        run.googleapis.com/client-version: 529.0.0
+        run.googleapis.com/startup-cpu-boost: 'true'
+      labels:
+        client.knative.dev/nonce: ymlyjqgdoo
+        run.googleapis.com/startupProbeType: Default
+    spec:
+      containerConcurrency: 80
+      containers:
+      - env:
+        - name: NODE_ENV
+          value: production
+        image: gcr.io/wayra-22/wayra-frontend:latest
+        ports:
+        - containerPort: 3000
+          name: http1
+        resources:
+          limits:
+            cpu: '1'
+            memory: 1Gi
+        startupProbe:
+          failureThreshold: 1
+          periodSeconds: 240
+          tcpSocket:
+            port: 3000
+          timeoutSeconds: 240
+      serviceAccountName: 424430120938-compute@developer.gserviceaccount.com
+      timeoutSeconds: 300
+  traffic:
+  - latestRevision: true
+    percent: 100

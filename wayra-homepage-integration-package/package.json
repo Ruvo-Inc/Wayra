@@ -1,0 +1,33 @@
+{
+  "name": "wayra-homepage-integration",
+  "version": "1.0.0",
+  "description": "World-class Wayra homepage components for integration",
+  "main": "components/WayraHomepage.jsx",
+  "dependencies": {
+    "lucide-react": "^0.263.1",
+    "framer-motion": "^10.16.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "keywords": [
+    "wayra",
+    "homepage",
+    "landing-page",
+    "react",
+    "conversion-optimized",
+    "travel",
+    "ai"
+  ],
+  "author": "Wayra Team",
+  "license": "MIT",
+  "files": [
+    "components/",
+    "styles/",
+    "integration-guide/"
+  ]
+}
+

@@ -1,79 +1,199 @@
 // Adventure Types
-export interface Adventure {
-  id: string;
-  userId: string;
-  tripId?: string;
+export const ACTIVITY_TYPES = [
+  { name: 'general', displayName: 'General 🌍', icon: '🌍' },
+  { name: 'outdoor', displayName: 'Outdoor 🏞️', icon: '🏞️' },
+  { name: 'lodging', displayName: 'Lodging 🛌', icon: '🛌' },
+  { name: 'dining', displayName: 'Dining 🍽️', icon: '🍽️' },
+  { name: 'activity', displayName: 'Activity 🏄', icon: '🏄' },
+  { name: 'attraction', displayName: 'Attraction 🎢', icon: '🎢' },
+  { name: 'shopping', displayName: 'Shopping 🛍️', icon: '🛍️' },
+  { name: 'nightlife', displayName: 'Nightlife 🌃', icon: '🌃' },
+  { name: 'event', displayName: 'Event 🎉', icon: '🎉' },
+  { name: 'transportation', displayName: 'Transportation 🚗', icon: '🚗' },
+  { name: 'culture', displayName: 'Culture 🎭', icon: '🎭' },
+  { name: 'water_sports', displayName: 'Water Sports 🚤', icon: '🚤' },
+  { name: 'hiking', displayName: 'Hiking 🥾', icon: '🥾' },
+  { name: 'wildlife', displayName: 'Wildlife 🦒', icon: '🦒' },
+  { name: 'historical_sites', displayName: 'Historical Sites 🏛️', icon: '🏛️' },
+  { name: 'music_concerts', displayName: 'Music & Concerts 🎶', icon: '🎶' },
+  { name: 'fitness', displayName: 'Fitness 🏋️', icon: '🏋️' },
+  { name: 'art_museums', displayName: 'Art & Museums 🎨', icon: '🎨' },
+  { name: 'festivals', displayName: 'Festivals 🎪', icon: '🎪' },
+  { name: 'spiritual_journeys', displayName: 'Spiritual Journeys 🧘‍♀️', icon: '🧘‍♀️' },
+  { name: 'volunteer_work', displayName: 'Volunteer Work 🤝', icon: '🤝' },
+  { name: 'other', displayName: 'Other', icon: '📝' }
+] as const;
+
+export type ActivityType = typeof ACTIVITY_TYPES[number]['name'];
+
+export interface AdventureCategory {
   name: string;
-  location?: string;
-  description?: string;
-  coordinates?: {
-    type: 'Point';
-    coordinates: [number, number]; // [longitude, latitude]
-  };
-  geographic?: {
-    country?: string;
-    countryCode?: string;
-    region?: string;
-    city?: string;
-  };
-  category: {
-    name: string;
-    icon?: string;
-  };
-  activityTypes: string[];
-  rating?: number;
-  link?: string;
-  isVisited: boolean;
-  isPublic: boolean;
-  images: AdventureImage[];
-  attachments: AdventureAttachment[];
-  visits: AdventureVisit[];
-  collections: string[];
-  createdAt: string;
-  updatedAt: string;
+  displayName: string;
+  icon: string;
 }
 
-export interface AdventureImage {
-  url: string;
-  isPrimary: boolean;
-}
-
-export interface AdventureAttachment {
-  filename: string;
-  url: string;
-  type: string;
-  uploadedAt: string;
+export interface AdventureCoordinates {
+  type: 'Point';
+  coordinates: [number, number]; // [longitude, latitude]
 }
 
 export interface AdventureVisit {
   startDate: string;
-  endDate: string;
-  timezone?: string;
+  endDate?: string;
   notes?: string;
+  createdAt: string;
 }
 
-// Collection Types
-export interface Collection {
+export interface AdventureImage {
   id: string;
-  userId: string;
-  tripId?: string;
-  name: string;
-  description?: string;
-  startDate?: string;
+  url: string;
+  caption?: string;
+  isPrimary: boolean;
+  filename: string;
+  fileSize: number;
+  fileType: string;
+  createdAt: string;
+}
+
+export interface Visit {
+  id: string;
+  adventureId: string;
+  date: string;
+  startDate: string;
   endDate?: string;
-  isPublic: boolean;
-  isArchived: boolean;
-  link?: string;
-  sharedWith: string[];
-  adventures: string[];
-  transportation: Transportation[];
-  notes: CollectionNote[];
-  checklists: Checklist[];
-  collaborators: Collaborator[];
+  notes?: string;
   createdAt: string;
   updatedAt: string;
 }
 
+export interface Attachment {
+  id: string;
+  adventureId: string;
+  filename: string;
+  url: string;
+  fileSize: number;
+  fileType: string;
+  createdAt: string;
+}
+
+export interface AdventureAttachment {
+  url: string;
+  name: string;
+  type: string;
+}
+
+export interface Adventure {
+  id: string;
+  _id?: string; // MongoDB document ID
+  userId: string;
+  tripId?: string;
+  name: string;
+  location?: string;
+  activityTypes: string[];
+  description?: string;
+  rating?: number;
+  link?: string;
+  coordinates?: AdventureCoordinates;
+  latitude?: number;
+  longitude?: number;
+  category: AdventureCategory;
+  isPublic: boolean;
+  collections: string[];
+  isVisited: boolean;
+  visits: AdventureVisit[];
+  images: AdventureImage[];
+  attachments: AdventureAttachment[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Collection {
+  _id: string;
+  id?: string; // Optional for backward compatibility
+  userId: string;
+  name: string;
+  description?: string;
+  isPublic: boolean;
+  startDate?: string | null;
+  endDate?: string | null;
+  isArchived: boolean;
+  link?: string;
+  adventures: string[];
+  sharedWith: string[];
+  tags: string[];
+  collaborators: Array<{
+    userId: string;
+    role: 'viewer' | 'editor';
+    addedAt: string;
+  }>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AdventureFormData {
+  name: string;
+  location?: string;
+  activityTypes: string[];
+  description?: string;
+  rating?: number;
+  link?: string;
+  latitude?: number;
+  longitude?: number;
+  category: {
+    name: string;
+    displayName: string;
+    icon?: string;
+  };
+  isPublic: boolean;
+  isVisited: boolean;
+}
+
+export interface CollectionFormData {
+  name: string;
+  description?: string;
+  isPublic: boolean;
+  startDate?: string | null;
+  endDate?: string | null;
+  link?: string;
+  tags: string[];
+}
+
+export interface AdventureFilters {
+  search?: string;
+  category?: string;
+  isPublic?: boolean;
+  isVisited?: boolean;
+  rating?: number;
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface CollectionFilters {
+  search?: string;
+  isPublic?: boolean;
+  isArchived?: boolean;
+  startDate?: string;
+  endDate?: string;
+  tags?: string[];
+}
+
+export interface AdventureStats {
+  totalAdventures: number;
+  visitedAdventures: number;
+  plannedAdventures: number;
+  uniqueCountries: number;
+  averageRating: number;
+}
+
+export interface CollectionStats {
+  totalCollections: number;
+  publicCollections: number;
+  sharedCollections: number;
+  totalAdventures: number;
+  averageDuration: number;
+}
+
+// Collection Types
 export interface Transportation {
   id: string;
   type: 'flight' | 'train' | 'bus' | 'car' | 'boat' | 'other';
@@ -371,6 +491,7 @@ export interface AdventureFormData {
   longitude?: number;
   category: {
     name: string;
+    displayName: string;
     icon?: string;
   };
   activityTypes: string[];
@@ -381,14 +502,7 @@ export interface AdventureFormData {
   tripId?: string;
 }
 
-export interface CollectionFormData {
-  name: string;
-  description?: string;
-  startDate?: string;
-  endDate?: string;
-  isPublic: boolean;
-  tripId?: string;
-}
+
 
 export interface TransportationFormData {
   type: 'flight' | 'train' | 'bus' | 'car' | 'boat' | 'other';
@@ -437,32 +551,7 @@ export interface GeographyFilters {
   type?: 'countries' | 'regions' | 'cities';
 }
 
-// Constants
-export const ACTIVITY_TYPES = [
-  'general',
-  'outdoor',
-  'lodging',
-  'dining',
-  'activity',
-  'attraction',
-  'shopping',
-  'nightlife',
-  'event',
-  'transportation',
-  'culture',
-  'water_sports',
-  'hiking',
-  'wildlife',
-  'historical_sites',
-  'music_concerts',
-  'fitness',
-  'art_museums',
-  'festivals',
-  'spiritual_journeys',
-  'volunteer_work',
-  'other'
-] as const;
-
+// Additional Constants
 export const TRANSPORTATION_TYPES = [
   'flight',
   'train',
@@ -478,7 +567,6 @@ export const COLLABORATOR_ROLES = [
   'admin'
 ] as const;
 
-export type ActivityType = typeof ACTIVITY_TYPES[number];
 export type TransportationType = typeof TRANSPORTATION_TYPES[number];
 export type CollaboratorRole = typeof COLLABORATOR_ROLES[number];
 

@@ -1,0 +1,113 @@
+/**
+ * Wayra OpenAI Service
+ * Handles all OpenAI API interactions with comprehensive error handling
+ */
+
+const OpenAI = require('openai');
+const { configLoader } = require('../../config/configLoader');
+
+class OpenAIService {
+  constructor() {
+    this.client = new OpenAI({
+      apiKey: configLoader.getOpenAIConfig().apiKey
+    });
+    this.defaultModel = configLoader.getOpenAIConfig().model || 'gpt-4';
+  }
+
+  /**
+   * Generate a response using OpenAI
+   */
+  async generateResponse(prompt, options = {}) {
+    try {
+      const {
+        model = this.defaultModel,
+        maxTokens = 2000,
+        temperature = 0.7,
+        systemMessage = null
+      } = options;
+
+      const messages = [];
+      
+      if (systemMessage) {
+        messages.push({ role: 'system', content: systemMessage });
+      }
+      
+      messages.push({ role: 'user', content: prompt });
+
+      const response = await this.client.chat.completions.create({
+        model,
+        messages,
+        max_tokens: maxTokens,
+        temperature,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0
+      });
+
+      return response.choices[0].message.content;
+
+    } catch (error) {
+      console.error('OpenAI API Error:', error);
+      throw new Error(`OpenAI request failed: ${error.message}`);
+    }
+  }
+
+  /**
+   * Generate travel planning response with specialized handling
+   */
+  async generateTravelPlanningResponse(prompt, agentType, context = {}) {
+    try {
+      const systemMessage = this.getTravelPlanningSystemMessage(agentType);
+      
+      const options = {
+        systemMessage,
+        maxTokens: agentType === 'itinerary_planning' ? 3000 : 2000,
+        temperature: 0.7
+      };
+
+      return await this.generateResponse(prompt, options);
+
+    } catch (error) {
+      console.error(`Travel planning error for ${agentType}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get specialized system message for travel planning agents
+   */
+  getTravelPlanningSystemMessage(agentType) {
+    const baseMessage = "You are a professional travel planning assistant focused on providing detailed, practical, and budget-conscious recommendations.";
+    
+    switch (agentType) {
+      case 'budget_analyst':
+        return `${baseMessage} You specialize in budget optimization and cost analysis. Always provide specific dollar amounts, percentages, and actionable cost-saving strategies.`;
+      
+      case 'destination_research':
+        return `${baseMessage} You specialize in destination research and cultural insights. Provide comprehensive information about locations, attractions, culture, and practical travel tips.`;
+      
+      case 'itinerary_planning':
+        return `${baseMessage} You specialize in creating detailed day-by-day itineraries. Always respond with valid JSON format containing structured daily plans with specific times, activities, costs, and locations.`;
+      
+      case 'travel_coordinator':
+        return `${baseMessage} You specialize in travel logistics and coordination. Focus on booking strategies, documentation, group coordination, and practical travel management.`;
+      
+      default:
+        return baseMessage;
+    }
+  }
+
+  /**
+   * Health check for OpenAI service
+   */
+  async healthCheck() {
+    try {
+      const response = await this.generateResponse("Hello", { maxTokens: 10 });
+      return { status: 'healthy', response: response.substring(0, 50) };
+    } catch (error) {
+      return { status: 'unhealthy', error: error.message };
+    }
+  }
+}
+
+module.exports = { OpenAIService };

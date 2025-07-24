@@ -7,6 +7,11 @@ const axios = require('axios');
 
 class TravelApiService {
   constructor() {
+    // Singleton pattern - return existing instance if it exists
+    if (TravelApiService.instance) {
+      return TravelApiService.instance;
+    }
+
     this.amadeus = {
       baseUrl: 'https://test.api.amadeus.com/v2',
       clientId: process.env.AMADEUS_CLIENT_ID,
@@ -25,6 +30,9 @@ class TravelApiService {
       username: process.env.BOOKING_USERNAME,
       password: process.env.BOOKING_PASSWORD
     };
+
+    // Store the instance
+    TravelApiService.instance = this;
   }
 
   // ==================== AMADEUS API METHODS ====================
@@ -37,12 +45,17 @@ class TravelApiService {
       return this.amadeus.accessToken;
     }
 
+    if (!this.amadeus.clientId || !this.amadeus.clientSecret) {
+      throw new Error('Amadeus credentials not configured');
+    }
+
     try {
-      const response = await axios.post('https://test.api.amadeus.com/v1/security/oauth2/token', {
-        grant_type: 'client_credentials',
-        client_id: this.amadeus.clientId,
-        client_secret: this.amadeus.clientSecret
-      }, {
+      const params = new URLSearchParams();
+      params.append('grant_type', 'client_credentials');
+      params.append('client_id', this.amadeus.clientId);
+      params.append('client_secret', this.amadeus.clientSecret);
+
+      const response = await axios.post('https://test.api.amadeus.com/v1/security/oauth2/token', params, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
@@ -51,10 +64,29 @@ class TravelApiService {
       this.amadeus.accessToken = response.data.access_token;
       this.amadeus.tokenExpiry = Date.now() + (response.data.expires_in * 1000);
       
+      console.log('✅ Amadeus token refreshed successfully');
       return this.amadeus.accessToken;
     } catch (error) {
-      console.error('Amadeus token error:', error.response?.data || error.message);
+      console.error('❌ Amadeus token error:', error.response?.data || error.message);
       throw new Error('Failed to get Amadeus access token');
+    }
+  }
+
+  /**
+   * Initialize API connections and tokens
+   */
+  async initialize() {
+    try {
+      // Get Amadeus token if credentials are available
+      if (this.amadeus.clientId && this.amadeus.clientSecret) {
+        await this.getAmadeusToken();
+      }
+      
+      console.log('✅ Travel APIs initialized successfully');
+      return true;
+    } catch (error) {
+      console.warn('⚠️ Travel API initialization warning:', error.message);
+      return false;
     }
   }
 

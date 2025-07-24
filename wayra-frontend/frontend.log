@@ -1,0 +1,59 @@
+
+> wayra-frontend@0.1.0 dev
+> next dev --turbopack
+
+   ▲ Next.js 15.3.5 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://10.0.0.226:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 911ms
+ ○ Compiling / ...
+ ✓ Compiled / in 2.4s
+Firebase Configuration Status: true
+ GET / 200 in 2661ms
+✅ Connected to Wayra collaboration server
+ GET / 200 in 55ms
+ ○ Compiling /collections ...
+ ✓ Compiled /collections in 783ms
+ GET /collections 200 in 837ms
+ ○ Compiling /collections/[id] ...
+ ✓ Compiled /collections/[id] in 737ms
+ GET /collections/687732426a92cf669fc6351f 200 in 1319ms
+ GET /collections/687732426a92cf669fc6351f 200 in 87ms
+ ○ Compiling /adventures/[id] ...
+ ✓ Compiled /adventures/[id] in 1087ms
+ GET /adventures/687465a4ac6303566fa01af0 200 in 1630ms
+ GET /adventures/687465a4ac6303566fa01af0 200 in 1349ms
+ ○ Compiling /adventures ...
+ ✓ Compiled /adventures in 808ms
+ GET /adventures 200 in 845ms
+ GET /collections 200 in 59ms
+ GET /collections/687732426a92cf669fc6351f 200 in 62ms
+ GET /collections/687732426a92cf669fc6351f 200 in 66ms
+ GET /adventures/687465a4ac6303566fa01af0 200 in 76ms
+ GET /adventures 200 in 77ms
+❌ Disconnected from collaboration server: ping timeout
+✅ Connected to Wayra collaboration server
+ GET / 200 in 416ms
+ GET / 200 in 93ms
+ GET /collections 200 in 59ms
+ GET /collections/687732426a92cf669fc6351f 200 in 79ms
+ GET /collections/687732426a92cf669fc6351f 200 in 117ms
+ GET /adventures/687465a4ac6303566fa01af0 200 in 67ms
+ GET /adventures 200 in 56ms
+ GET /collections 200 in 89ms
+ GET /collections/687732426a92cf669fc6351f 200 in 92ms
+ GET /collections/687732426a92cf669fc6351f 200 in 82ms
+ GET /adventures/687465a4ac6303566fa01af0 200 in 58ms
+ GET /adventures 200 in 77ms
+ ○ Compiling /_not-found/page ...
+ ✓ Compiled /_not-found/page in 2.8s
+ GET /parent_injection.js.map 404 in 2870ms
+ ✓ Compiled in 985ms
+ ✓ Compiled in 422ms
+ ✓ Compiled in 196ms
+❌ Disconnected from collaboration server: ping timeout
+✅ Connected to Wayra collaboration server
+[?25h

@@ -1,22 +1,42 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
+import "../styles/homepage.css";
 import { AuthProvider } from '@/contexts/AuthContext';
 import { CollaborationProvider } from '@/contexts/CollaborationContext';
+import { Navigation } from '@/components/layout/Navigation';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Required fonts as per integration guide
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap", // Performance optimization as per guide
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
+  weight: ["600", "700"],
+  display: "swap", // Performance optimization as per guide
 });
 
+// SEO metadata as per integration guide
 export const metadata: Metadata = {
-  title: "Wayra - Collaborative Travel Planning",
-  description: "Plan your perfect trip with AI-powered recommendations and real-time collaboration",
+  title: "Wayra - AI That Books Your Perfect Trip While You Sleep",
+  description: "Set your budget, pick your dream destination. Wayra's AI hunts for deals 24/7 and books your flights, hotels, and activities when prices hit your target.",
+  keywords: "AI travel planning, automated booking, travel deals, budget travel, smart travel",
+  openGraph: {
+    title: "Wayra - AI That Books Your Perfect Trip While You Sleep",
+    description: "Set your budget, pick your dream destination. Wayra's AI hunts for deals 24/7 and books your flights, hotels, and activities when prices hit your target.",
+    type: "website",
+    images: ["/images/wayra-og-image.jpg"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Wayra - AI That Books Your Perfect Trip While You Sleep",
+    description: "Set your budget, pick your dream destination. Wayra's AI hunts for deals 24/7 and books your flights, hotels, and activities when prices hit your target.",
+  },
 };
 
 export default function RootLayout({
@@ -25,13 +45,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning={true}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.variable} ${poppins.variable} antialiased`}
       >
         <AuthProvider>
           <CollaborationProvider>
-            {children}
+            <div className="min-h-screen bg-gray-50">
+              <Navigation />
+              <main className="lg:pl-64">
+                <div className="lg:pt-0 pt-16">
+                  {children}
+                </div>
+              </main>
+            </div>
           </CollaborationProvider>
         </AuthProvider>
       </body>
